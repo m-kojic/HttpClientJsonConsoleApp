@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace HttpJsonConsoleApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.WriteLine("HTTP client and JSON Console App");
 
@@ -21,17 +22,16 @@ namespace HttpJsonConsoleApp
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             // Get response
-            var response = httpClient.SendAsync(request);
+            var response = await httpClient.SendAsync(request);
 
             // Read response and convert it to string
-            var responseContentTask = response.Result.Content.ReadAsStringAsync();
+            var responseResult = await response.Content.ReadAsStringAsync();
 
             // Print out the result
-            var result = responseContentTask.Result;
-            Console.WriteLine("Response Content: " + result);
+            Console.WriteLine("Response Content: " + responseResult);
 
             // Deserialize responseContent
-            var modelList = JsonConvert.DeserializeObject<List<CommentModel>>(result);
+            var modelList = JsonConvert.DeserializeObject<List<CommentModel>>(responseResult);
 
             PrintComments(modelList);
         }
